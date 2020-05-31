@@ -40,6 +40,24 @@ var getMaxElement = function (arr) {
   return maxElement;
 };
 
+var renderText = function (ctx, text, lineNumber) {
+  ctx.fillText(text, CLOUD_X + CLOUD_GAP_X, CLOUD_Y + CLOUD_GAP_Y + lineNumber * FONT_GAP);
+};
+
+var renderBar = function (ctx, player, time, maxTime, index) {
+  ctx.fillStyle = player === 'Вы' ? 'rgba(255, 0, 0, 1)' : 'hsl(240, ' + Math.floor(Math.random() * 101) + '%, 50%)';
+  ctx.fillRect(FIRST_PLAYER_BAR_X + index * BAR_GAP, FIRST_PLAYER_BAR_Y + BAR_MAX_HEIGHT * (1 - (time / maxTime)), BAR_WIDTH, BAR_MAX_HEIGHT * time / maxTime);
+};
+
+var renderTime = function (ctx, time, maxTime, index) {
+  ctx.fillText(Math.round(time), FIRST_PLAYER_NAME_X + index * BAR_GAP, FIRST_PLAYER_BAR_Y + BAR_MAX_HEIGHT * (1 - (time / maxTime)) - TIME_GAP);
+};
+
+var renderName = function (ctx, player, index) {
+  ctx.fillStyle = '#000000';
+  ctx.fillText(player, FIRST_PLAYER_NAME_X + index * BAR_GAP, FIRST_PLAYER_NAME_Y);
+};
+
 window.renderStatistics = function (ctx, players, times) {
   renderCloud(ctx, CLOUD_X + CLOUD_GAP_X, CLOUD_Y + CLOUD_GAP_X, 'rgba(0, 0, 0, 0.7)');
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#ffffff');
@@ -47,18 +65,14 @@ window.renderStatistics = function (ctx, players, times) {
   ctx.font = '16px PT Mono';
   ctx.fillStyle = '#000000';
 
-  ctx.fillText('Ура вы победили!', CLOUD_X + CLOUD_GAP_X, CLOUD_Y + CLOUD_GAP_Y + FONT_GAP);
-  ctx.fillText('Список результатов:', CLOUD_X + CLOUD_GAP_X, CLOUD_Y + CLOUD_GAP_Y + 2 * FONT_GAP);
+  renderText(ctx, 'Ура вы победили!', 1);
+  renderText(ctx, 'Список результатов:', 2);
 
   var maxTime = getMaxElement(times);
 
   for (var i = 0; i < players.length; i++) {
-    ctx.fillText(Math.round(times[i]), FIRST_PLAYER_NAME_X + i * BAR_GAP, FIRST_PLAYER_BAR_Y + BAR_MAX_HEIGHT * (1 - (times[i] / maxTime)) - TIME_GAP);
-
-    ctx.fillStyle = players[i] === 'Вы' ? 'rgba(255, 0, 0, 1)' : 'hsl(240, ' + Math.floor(Math.random() * 101) + '%, 50%)';
-    ctx.fillRect(FIRST_PLAYER_BAR_X + i * BAR_GAP, FIRST_PLAYER_BAR_Y + BAR_MAX_HEIGHT * (1 - (times[i] / maxTime)), BAR_WIDTH, BAR_MAX_HEIGHT * times[i] / maxTime);
-
-    ctx.fillStyle = '#000000';
-    ctx.fillText(players[i], FIRST_PLAYER_NAME_X + i * BAR_GAP, FIRST_PLAYER_NAME_Y);
+    renderTime(ctx, times[i], maxTime, i);
+    renderBar(ctx, players[i], times[i], maxTime, i);
+    renderName(ctx, players[i], i);
   }
 };
