@@ -927,6 +927,12 @@ input[type=radio]:checked + .review-mark-label
     opacity: .3;
 }
 
+.setup-errors
+{
+  text-align: center;
+  color: #fff;
+}
+
 .overlay-gallery
 {
     text-align: center;
